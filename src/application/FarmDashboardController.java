@@ -367,7 +367,80 @@ public class FarmDashboardController {
         });
     }
     
+   @FXML
+    private void changeItemLocation() {
+        showInputDialog("Change Item Location", "Enter new X and Y coordinates", input -> {
+            if (selectedItem != null) {
+                try {
+                    String[] coords = input.split(",");
+                    if (coords.length == 2) {
+                        selectedItem.setLocationX(Double.parseDouble(coords[0].trim()));
+                        selectedItem.setLocationY(Double.parseDouble(coords[1].trim()));
+                        drawFarmLayout();
+                    } else {
+                        showError("Invalid Input", "Please enter valid X and Y coordinates.");
+                    }
+                } catch (NumberFormatException e) {
+                    showError("Invalid Input", "Coordinates must be numeric.");
+                }
+            } else {
+                showError("No Selection", "Please select an item to change its location.");
+            }
+        });
+    }
+
+@FXML
+    private void changeItemPrice() {
+        showInputDialog("Change Item Price", "Enter new price for the item:", price -> {
+            if (selectedItem != null) {
+                try {
+                    selectedItem.setPrice(Double.parseDouble(price));
+                } catch (NumberFormatException e) {
+                    showError("Invalid Input", "Price must be numeric.");
+                }
+            } else {
+                showError("No Selection", "Please select an item to change its price.");
+            }
+        });
+    }
     
+    @FXML
+    private void changeItemDimensions() {
+        showInputDialog("Change Item Dimensions", "Enter new length and width", input -> {
+            if (selectedItem != null) {
+                try {
+                    String[] dims = input.split(",");
+                    if (dims.length == 2) {
+                        selectedItem.setLength(Double.parseDouble(dims[0].trim()));
+                        selectedItem.setWidth(Double.parseDouble(dims[1].trim()));
+                        drawFarmLayout();
+                    } else {
+                        showError("Invalid Input", "Please enter valid length and width.");
+                    }
+                } catch (NumberFormatException e) {
+                    showError("Invalid Input", "Dimensions must be numeric.");
+                }
+            } else {
+                showError("No Selection", "Please select an item to change its dimensions.");
+            }
+        });
+    }
+
+    @FXML
+    private void deleteItem() {
+        if (selectedItem != null) {
+            ItemContainer parent = findParent(root, selectedItem);
+            if (parent != null) {
+                parent.getItems().remove(selectedItem);
+                refreshTreeView();
+                drawFarmLayout();
+            } else {
+                showError("Invalid Operation", "Cannot delete the root container.");
+            }
+        } else {
+            showError("No Selection", "Please select an item to delete.");
+        }
+    }s 
     @FXML
     private void deleteItemContainer() {
         if (selectedItem instanceof ItemContainer) {
