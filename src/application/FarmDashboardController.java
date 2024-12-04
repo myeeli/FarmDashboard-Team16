@@ -20,6 +20,15 @@ public class FarmDashboardController {
 
     @FXML
     private Canvas farmCanvas;
+    
+    @FXML
+    private ToggleGroup droneActions;
+    @FXML
+    private RadioButton visitItemRadio;
+    
+    @FXML
+    private RadioButton scanFarmRadio;
+    
 
     private GraphicsContext gc;
 
@@ -35,10 +44,19 @@ public class FarmDashboardController {
     private Image droneImage;
 
     @FXML
-    private ToggleGroup droneActions;
+    private void initialize() {
+        gc = farmCanvas.getGraphicsContext2D();
+        droneImage = new Image(getClass().getResourceAsStream("/images/drone.jpeg"));
+        
+        initializeTreeView();
+        drawFarmLayout();
+
+        droneX.addListener((obs, oldVal, newVal) -> drawFarmLayout());
+        droneY.addListener((obs, oldVal, newVal) -> drawFarmLayout());
+    }
+    
+    
     @FXML
-    private RadioButton visitItemRadio;
-@FXML
     private void executeDroneAction() {
         RadioButton selectedAction = (RadioButton) droneActions.getSelectedToggle();
         if (selectedAction != null) {
@@ -62,9 +80,8 @@ public class FarmDashboardController {
         );
         timeline.play();
     }
-    @FXML
-   private RadioButton scanFarmRadio;
-private void animateDroneScanFarm() {
+   
+    private void animateDroneScanFarm() {
        double farmWidth = farmCanvas.getWidth();
        double farmHeight = farmCanvas.getHeight();
        double droneWidth = 70;
@@ -98,18 +115,6 @@ private void animateDroneScanFarm() {
        timeline.play();
    }
 
-
-    @FXML
-    private void initialize() {
-        gc = farmCanvas.getGraphicsContext2D();
-        droneImage = new Image(getClass().getResourceAsStream("/images/drone.jpeg"));
-        
-        initializeTreeView();
-        drawFarmLayout();
-
-        droneX.addListener((obs, oldVal, newVal) -> drawFarmLayout());
-        droneY.addListener((obs, oldVal, newVal) -> drawFarmLayout());
-    }
 
     private void initializeTreeView() {
         TreeItem<String> rootNode = new TreeItem<>("Root");
