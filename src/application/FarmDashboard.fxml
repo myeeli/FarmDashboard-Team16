@@ -15,6 +15,14 @@
         <VBox spacing="10" style="-fx-padding: 10;">
             <Label text="Items / Item Containers" />
             <TreeView fx:id="itemTree" />
+            <Label text="Item Commands" />
+            <VBox spacing="5">
+                <Button text="Rename Item" onAction="#renameItem" />
+                <Button text="Change Location" onAction="#changeItemLocation" />
+                <Button text="Change Price" onAction="#changeItemPrice" />
+                <Button text="Change Dimensions" onAction="#changeItemDimensions" />
+                <Button text="Delete Item" onAction="#deleteItem" />
+            </VBox>
             <Label text="Container Commands" />
             <VBox spacing="5">
                 <Button text="Rename Container" onAction="#renameItemContainer" />
