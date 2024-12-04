@@ -30,6 +30,17 @@
     <center>
         <Canvas fx:id="farmCanvas" width="800" height="600" />
     </center>
+      <bottom>
+        <VBox spacing="10" style="-fx-padding: 10;">
+            <Label text="Drone Actions" />
+            <HBox spacing="10">
+    			<RadioButton text="Visit Item" fx:id="visitItemRadio" toggleGroup="$droneActions" />
+    			<RadioButton text="Scan Farm" fx:id="scanFarmRadio" toggleGroup="$droneActions" />
+    			<Button text="Scan" onAction="#executeDroneAction" />
+			</HBox>
+        </VBox>
+    </bottom>
+
 </BorderPane>
 
 
