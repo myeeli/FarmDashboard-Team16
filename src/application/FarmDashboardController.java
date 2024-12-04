@@ -209,7 +209,7 @@ public class FarmDashboardController {
     }
 
 
-        @FXML
+    @FXML
     private void addItemContainer() {
         showInputDialog("Add Item Container", "Enter container details: Name, Price, X, Y, Length, Width:", input -> {
             if (selectedItem instanceof ItemContainer) {
