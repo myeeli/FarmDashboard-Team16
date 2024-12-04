@@ -62,6 +62,41 @@ public class FarmDashboardController {
         );
         timeline.play();
     }
+    @FXML
+   private RadioButton scanFarmRadio;
+private void animateDroneScanFarm() {
+       double farmWidth = farmCanvas.getWidth();
+       double farmHeight = farmCanvas.getHeight();
+       double droneWidth = 70;
+       double stepHeight = 80;
+ 
+       Timeline timeline = new Timeline();
+       boolean directionRight = true;
+ 
+       for (double y = 0; y < farmHeight; y += stepHeight) {
+           double startX = directionRight ? 0 : farmWidth - droneWidth;
+           double endX = directionRight ? farmWidth - droneWidth : 0;
+ 
+           KeyFrame horizontalMove = new KeyFrame(
+               Duration.seconds(y / stepHeight * 2),
+               new KeyValue(droneX, endX),
+               new KeyValue(droneY, y)
+           );
+           timeline.getKeyFrames().add(horizontalMove);
+ 
+           directionRight = !directionRight;
+       }
+ 
+       KeyFrame returnToDronePos = new KeyFrame(
+               Duration.seconds((farmHeight / stepHeight + 1) * 2),
+               new KeyValue(droneX, droneX.get()),
+               new KeyValue(droneY, droneY.get())
+           );
+       timeline.getKeyFrames().add(returnToDronePos);
+ 
+       timeline.setCycleCount(1);
+       timeline.play();
+   }
 
 
     @FXML
