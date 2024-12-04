@@ -23,9 +23,11 @@ public class FarmDashboardController {
     
     @FXML
     private ToggleGroup droneActions;
+
     @FXML
     private RadioButton visitItemRadio;
     
+
     @FXML
     private RadioButton scanFarmRadio;
     
@@ -47,74 +49,19 @@ public class FarmDashboardController {
     private void initialize() {
         gc = farmCanvas.getGraphicsContext2D();
         droneImage = new Image(getClass().getResourceAsStream("/images/drone.jpeg"));
-        
+
+        if (droneActions == null) {
+            droneActions = new ToggleGroup();
+            visitItemRadio.setToggleGroup(droneActions);
+            scanFarmRadio.setToggleGroup(droneActions);
+        }
+
         initializeTreeView();
         drawFarmLayout();
 
         droneX.addListener((obs, oldVal, newVal) -> drawFarmLayout());
         droneY.addListener((obs, oldVal, newVal) -> drawFarmLayout());
     }
-    
-    
-    @FXML
-    private void executeDroneAction() {
-        RadioButton selectedAction = (RadioButton) droneActions.getSelectedToggle();
-        if (selectedAction != null) {
-            if ("Visit Item".equals(selectedAction.getText())) {
-                if (selectedItem != null) {
-                    animateDroneTo(selectedItem.getLocationX(), selectedItem.getLocationY());
-                } else {
-                    showError("No Selection", "Please select an item or container to visit.");
-                }
-            } else if ("Scan Farm".equals(selectedAction.getText())) {
-                animateDroneScanFarm();
-            }
-        } else {
-            showError("No Action Selected","");
-        }
-    }
-    private void animateDroneTo(double targetX, double targetY) {
-        Timeline timeline = new Timeline(
-            new KeyFrame(Duration.ZERO, new KeyValue(droneX, droneX.get()), new KeyValue(droneY, droneY.get())),
-            new KeyFrame(Duration.seconds(2), new KeyValue(droneX, targetX), new KeyValue(droneY, targetY))
-        );
-        timeline.play();
-    }
-   
-    private void animateDroneScanFarm() {
-       double farmWidth = farmCanvas.getWidth();
-       double farmHeight = farmCanvas.getHeight();
-       double droneWidth = 70;
-       double stepHeight = 80;
- 
-       Timeline timeline = new Timeline();
-       boolean directionRight = true;
- 
-       for (double y = 0; y < farmHeight; y += stepHeight) {
-           double startX = directionRight ? 0 : farmWidth - droneWidth;
-           double endX = directionRight ? farmWidth - droneWidth : 0;
- 
-           KeyFrame horizontalMove = new KeyFrame(
-               Duration.seconds(y / stepHeight * 2),
-               new KeyValue(droneX, endX),
-               new KeyValue(droneY, y)
-           );
-           timeline.getKeyFrames().add(horizontalMove);
- 
-           directionRight = !directionRight;
-       }
- 
-       KeyFrame returnToDronePos = new KeyFrame(
-               Duration.seconds((farmHeight / stepHeight + 1) * 2),
-               new KeyValue(droneX, droneX.get()),
-               new KeyValue(droneY, droneY.get())
-           );
-       timeline.getKeyFrames().add(returnToDronePos);
- 
-       timeline.setCycleCount(1);
-       timeline.play();
-   }
-
 
     private void initializeTreeView() {
         TreeItem<String> rootNode = new TreeItem<>("Root");
@@ -171,7 +118,7 @@ public class FarmDashboardController {
             }
         }
     }
-    
+
     @FXML
     private void addItem() {
         showInputDialog("Add Item", "Enter item details: Name, Price, X, Y, Length, Width:", input -> {
@@ -208,7 +155,6 @@ public class FarmDashboardController {
         });
     }
 
-
     @FXML
     private void addItemContainer() {
         showInputDialog("Add Item Container", "Enter container details: Name, Price, X, Y, Length, Width:", input -> {
@@ -243,6 +189,73 @@ public class FarmDashboardController {
             }
         });
     }
+
+     //brijesh
+    @FXML
+    private void executeDroneAction() {
+        RadioButton selectedAction = (RadioButton) droneActions.getSelectedToggle();
+        if (selectedAction != null) {
+            if ("Visit Item".equals(selectedAction.getText())) {
+                if (selectedItem != null) {
+                    animateDroneTo(selectedItem.getLocationX(), selectedItem.getLocationY());
+                } else {
+                    showError("No Selection", "Please select an item or container to visit.");
+                }
+            } else if ("Scan Farm".equals(selectedAction.getText())) {
+                animateDroneScanFarm();
+            }
+        } else {
+            showError("No Action Selected","");
+        }
+    }
+
+    private void animateDroneTo(double targetX, double targetY) {
+        Timeline timeline = new Timeline(
+            new KeyFrame(Duration.ZERO, new KeyValue(droneX, droneX.get()), new KeyValue(droneY, droneY.get())),
+            new KeyFrame(Duration.seconds(2), new KeyValue(droneX, targetX), new KeyValue(droneY, targetY))
+        );
+        timeline.play();
+    }
+
+    //briejsh
+    
+    //ashima
+    private void animateDroneScanFarm() {
+        double farmWidth = farmCanvas.getWidth();
+        double farmHeight = farmCanvas.getHeight();
+        double droneWidth = 70;
+        double stepHeight = 80;
+
+        Timeline timeline = new Timeline();
+        boolean directionRight = true;
+
+        for (double y = 0; y < farmHeight; y += stepHeight) {
+            double startX = directionRight ? 0 : farmWidth - droneWidth;
+            double endX = directionRight ? farmWidth - droneWidth : 0;
+
+            KeyFrame horizontalMove = new KeyFrame(
+                Duration.seconds(y / stepHeight * 2),
+                new KeyValue(droneX, endX),
+                new KeyValue(droneY, y)
+            );
+            timeline.getKeyFrames().add(horizontalMove);
+
+            directionRight = !directionRight;
+        }
+
+        KeyFrame returnToDronePos = new KeyFrame(
+                Duration.seconds((farmHeight / stepHeight + 1) * 2),
+                new KeyValue(droneX, droneX.get()),
+                new KeyValue(droneY, droneY.get())
+            );
+        timeline.getKeyFrames().add(returnToDronePos);
+
+        timeline.setCycleCount(1);
+        timeline.play();
+    }
+    
+    //ashima
+
     private void refreshTreeView() {
         TreeItem<String> rootNode = new TreeItem<>("Root");
         buildTree(root, rootNode);
@@ -308,6 +321,28 @@ public class FarmDashboardController {
     }
     
     @FXML
+    private void changeItemLocation() {
+        showInputDialog("Change Item Location", "Enter new X and Y coordinates", input -> {
+            if (selectedItem != null) {
+                try {
+                    String[] coords = input.split(",");
+                    if (coords.length == 2) {
+                        selectedItem.setLocationX(Double.parseDouble(coords[0].trim()));
+                        selectedItem.setLocationY(Double.parseDouble(coords[1].trim()));
+                        drawFarmLayout();
+                    } else {
+                        showError("Invalid Input", "Please enter valid X and Y coordinates.");
+                    }
+                } catch (NumberFormatException e) {
+                    showError("Invalid Input", "Coordinates must be numeric.");
+                }
+            } else {
+                showError("No Selection", "Please select an item to change its location.");
+            }
+        });
+    }
+    
+    @FXML
     private void changeContainerLocation() {
         showInputDialog("Change Container Location", "Enter new X and Y coordinates", input -> {
             if (selectedItem instanceof ItemContainer) {
@@ -367,29 +402,7 @@ public class FarmDashboardController {
         });
     }
     
-   @FXML
-    private void changeItemLocation() {
-        showInputDialog("Change Item Location", "Enter new X and Y coordinates", input -> {
-            if (selectedItem != null) {
-                try {
-                    String[] coords = input.split(",");
-                    if (coords.length == 2) {
-                        selectedItem.setLocationX(Double.parseDouble(coords[0].trim()));
-                        selectedItem.setLocationY(Double.parseDouble(coords[1].trim()));
-                        drawFarmLayout();
-                    } else {
-                        showError("Invalid Input", "Please enter valid X and Y coordinates.");
-                    }
-                } catch (NumberFormatException e) {
-                    showError("Invalid Input", "Coordinates must be numeric.");
-                }
-            } else {
-                showError("No Selection", "Please select an item to change its location.");
-            }
-        });
-    }
-
-@FXML
+    @FXML
     private void changeItemPrice() {
         showInputDialog("Change Item Price", "Enter new price for the item:", price -> {
             if (selectedItem != null) {
@@ -440,7 +453,8 @@ public class FarmDashboardController {
         } else {
             showError("No Selection", "Please select an item to delete.");
         }
-    }s 
+    }
+    
     @FXML
     private void deleteItemContainer() {
         if (selectedItem instanceof ItemContainer) {
